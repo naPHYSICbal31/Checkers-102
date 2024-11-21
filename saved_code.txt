@@ -1,0 +1,76 @@
+void iDraw()
+{
+	//place your drawing codes here
+	iClear();
+	iShowBMP(0,0, "checker_board.bmp");
+	setup();
+	//red pieces
+	for(int i = 0; i < 12; i += 1)
+	{
+		iShowBMP2(white[i][0],white[i][1],"checker_red.bmp",0);
+	}
+	for(int i = 0; i < 12; i += 1)
+	{
+		iShowBMP2(black[i][0],black[i][1],"checker_black.bmp",0);
+	}
+	//black pieces
+}
+
+
+
+
+
+
+
+void setup() //declaring initial setup of the checker_board
+{  
+	//red pieces
+	for(int x_val = px,i = 0,b_x = 0,b_y = 0; i < 4; i += 1,x_val += 2*incr,b_x += 2)
+    {
+        white[i][0] = x_val;
+		white[i][1] = py;
+		board[b_y][b_x] = 1;
+		
+    }
+	for(int x_val = px+incr,i = 4,b_x = 1,b_y = 1; i < 8; i += 1, x_val += 2*incr, b_x += 2)
+    {
+		 
+        white[i][0] = x_val;
+		white[i][1] = py+incr;
+		board[b_y][b_x] = 1;
+    }
+	for(int x_val = px,i = 8,b_x = 0,b_y = 2; i < 12; i += 1,x_val += 2*incr,b_x += 2)
+    {
+        white[i][0] = x_val;
+		white[i][1] = py+2*incr;
+		board[b_y][b_x] = 1;
+    }
+	//black pieces
+	for(int x_val = px+incr,i = 0,b_x = 1,b_y = 7; i < 4; i += 1,x_val += 2*incr,b_x += 2)
+    {
+        black[i][0] = x_val;
+		black[i][1] = py+7*incr;
+		board[b_y][b_x] = -1;
+    }
+	for(int x_val = px,i = 4,b_x = 0,b_y = 6; i < 8; i += 1,x_val += 2*incr,b_x += 2)
+    {
+        black[i][0] = x_val;
+		black[i][1] = py+6*incr;
+		board[b_y][b_x] = -1;
+    }
+	for(int x_val = px+incr,i = 8,b_x = 1,b_y = 5; i < 12; i += 1,x_val += 2*incr,b_x += 2)
+    {
+        black[i][0] = x_val;
+		black[i][1] = py+5*incr;
+		board[b_y][b_x] = -1;
+    }
+	/*for(int i = 7; i >= 0; i -= 1) //shows current board situation(where is which piece) // notice how the loop is reversed
+	{
+		for(int j = 7; j >= 0; j -= 1)
+		{
+			printf("%d ",board[i][j]);
+		}
+		printf("\n");
+	}
+	printf("done\n"); */
+}
