@@ -7,11 +7,13 @@
 //  Version: 2.0.2012.2015
 //
 
+#pragma once // this line was added by Razin Reaz Abedin on 2024-11-24
+
 # include <stdio.h>
 # include <stdlib.h>
 #pragma comment(lib, "glut32.lib")
 #pragma comment(lib, "glaux.lib")
-#include <GL/glut.h>
+#include "GL/glut.h"
 #include <time.h>
 #include <math.h>
 #include <windows.h>
@@ -35,6 +37,7 @@ void iKeyboard(unsigned char);
 void iSpecialKeyboard(unsigned char);
 void iMouseMove(int, int);
 void iMouse(int button, int state, int x, int y);
+void iMousePassiveMove(int, int); // added on 2024-11-24 by Anwarul Bashir Shuaib and Razin Reaz Abedin
 
 static void  __stdcall iA0(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[0])iAnimFunction[0]();}
 static void  __stdcall iA1(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[1])iAnimFunction[1]();}
@@ -97,93 +100,15 @@ void iResumeTimer(int index){
 //                ground image, then the background of the image strip should
 //                not get rendered. Use the background color of the image strip
 //                in ignoreColor parameter. Then the strip's background does
-//                not get rendered.
+//                not get rendered. 
 //
 //                To disable this feature, put -1 in this parameter
+//                To ignore red,    put 0x000000FF in this parameter
+//                To ignore green,  put 0x0000FF00 in this parameter
+//                To ignore blue,   put 0x00FF0000 in this parameter
 //
 void iShowBMP2(int x, int y, char filename[], int ignoreColor)
 {
-   /// old implementation, causes memory leak
-    /*
-
-    AUX_RGBImageRec *TextureImage;
-    TextureImage = auxDIBImageLoad(filename);
-
-    int i,j,k;
-    int width = TextureImage->sizeX;
-    int height = TextureImage->sizeY;
-    int nPixels = width * height;
-    int *rgPixels = new int[nPixels];
-
-    for (i = 0, j=0; i < nPixels; i++, j += 3)
-    {
-        int rgb = 0;
-        for(int k = 2; k >= 0; k--)
-        {
-            rgb = ((rgb << 8) | TextureImage->data[j+k]);
-        }
-
-        rgPixels[i] = (rgb == ignoreColor) ? 0 : 255;
-        rgPixels[i] = ((rgPixels[i] << 24) | rgb);
-    }
-
-    glRasterPos2f(x, y);
-    glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgPixels);
-
-    delete []rgPixels;
-    free(TextureImage->data);  // this free doesn't work
-    free(TextureImage);  // this free doesn't work
-    */
-
-/// this implementation doesn't work for some bmp files
-//    int i,j;
-//
-//    FILE* f = fopen(filename, "rb");
-//    unsigned char info[54];
-//    fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
-//
-//    // extract image height and width from header
-//    int width = *(int*)&info[18];
-//    int height = *(int*)&info[22];
-//
-//    printf("width: %d, height: %d\n",width,height);
-//
-//    int nPixels = width * height;
-//    int *rgPixels = new int[nPixels];
-//
-//    int size = 3 * nPixels;
-//    unsigned char* data = new unsigned char[size]; // allocate 3 bytes per pixel
-//    fread(data, sizeof(unsigned char), size, f); // read the rest of the data at once
-//    fclose(f);
-//
-//
-//    for (i = 0, j=0; i < nPixels; i++, j += 3)
-//    {
-//        int bgr = 0;
-//
-//        //for(int k = 2; k >= 0; k--)
-//        for(int k = 0; k < 3; k++)
-//        {
-//
-//            bgr = ((bgr << 8) | data[j+k]);
-//
-//        }
-//
-//        printf("%x\n",bgr);
-//
-//        rgPixels[i] = (bgr == ignoreColor) ? 0 : 255;
-//
-//        rgPixels[i] = ((rgPixels[i] << 24) | bgr);
-//    }
-//
-//    delete []data;
-//
-//    glRasterPos2f(x, y);
-//    glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgPixels);
-//
-//    delete []rgPixels;
-
-
 /// this probably works for all types of bmp files
     int  width, height, n;
     stbi_set_flip_vertically_on_load(1);
@@ -511,6 +436,16 @@ void mouseHandlerFF(int button, int state, int x, int y)
     glFlush();
 }
 
+// Function added on 2024-11-24 by Anwarul Bashir Shuaib and Razin Reaz Abedin
+void mousePassiveMoveHandlerFF(int x, int y)
+{
+    iMouseX = x;
+    iMouseY = iScreenHeight - y;
+    iMousePassiveMove(iMouseX, iMouseY);
+
+    glFlush();
+}
+
 void iInitialize(int width=500, int height=500, char *title="iGraphics")
 {
     iScreenHeight = height;
@@ -534,6 +469,7 @@ void iInitialize(int width=500, int height=500, char *title="iGraphics")
     glutSpecialFunc(keyboardHandler2FF); //special keys
     glutMouseFunc(mouseHandlerFF);
     glutMotionFunc(mouseMoveHandlerFF);
+    glutPassiveMotionFunc(mousePassiveMoveHandlerFF); // added on 2024-11-24 by Anwarul Bashir Shuaib and Razin Reaz Abedin
     glutIdleFunc(animFF) ;
 
     //
