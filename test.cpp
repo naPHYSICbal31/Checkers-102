@@ -7,14 +7,7 @@ int idx = 0;
 /*
 	function iDraw() is called again and again by the system.
 
-	*/
-void anim1_setup()
-{
-    for(int i = 0; i < 38; i += 1)
-    {
-       sprintf(anim1[i],"scene%02d.bmp",i);
-    }
-}
+*/
 void iDraw() {
 	//place your drawing codes here
 	iClear();
@@ -69,7 +62,6 @@ void iMousePassiveMove(int mx,int my)
 
 int main() {
 	//place your own initialization codes here.
-    anim1_setup();
 	iInitialize(1200,800, "demo");
 	return 0;
 }

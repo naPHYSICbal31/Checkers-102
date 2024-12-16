@@ -14,6 +14,7 @@ void draw_timer_red();
 void draw_timer_black();
 void show_pieces();
 void playsound();
+
 char name1[100], name2[100], name3[100], name4[100];
 int len = 0, mode = 0;
 enum screen
@@ -26,7 +27,7 @@ enum screen
 screen now = TITLE;
 int px = 158, py = 148;
 int incr = 69;
-int board[8][8] = {0}; // stores info about where is which piece
+int board[8][8] = {0};
 int tap_board[8][8] = {0};
 char anim1[38][100];
 char anim2[26][100];
@@ -61,8 +62,17 @@ char p_black[50];
 char p_red[50];
 int x = 1;
 int y = 1;
-void setup() // declaring initial setup of the checker_board
+int z = 1;
+
+void setup()
 {
+	for(int r = 0; r < 8; r++)
+	{
+		for(int c = 0; c < 8; c++)
+		{
+			board[r][c] = 0;
+		}
+	}
 	// black pieces
 	for (int r = 0, c = 1; c < 8; c += 2)
 	{
@@ -189,6 +199,11 @@ void iDraw()
 	switch (now)
 	{
 	case TITLE:
+	if(z == 1)
+	{
+		PlaySound("background.wav", NULL, SND_LOOP | SND_ASYNC);
+		z = 0;
+	}
 		iShowBMP(0, 0, "title.bmp");
 		break;
 	case FORMAT:
@@ -563,11 +578,6 @@ void iDraw()
 		break;
 	}
 }
-
-/*
-	function iMouseMove() is called when the user presses and drags the mouse.
-	(mx, my) is the position where the mouse pointer is.
-	*/
 void iMouseMove(int mx, int my)
 {
 	// place your codes here
@@ -575,14 +585,9 @@ void iMouseMove(int mx, int my)
 void iMousePassiveMove(int mx, int my)
 {
 }
-
-/*
-	function iMouse() is called when the user presses/releases the mouse.
-	(mx, my) is the position where the mouse pointer is.
-	*/
 void iMouse(int button, int state, int mx, int my)
 {
-	printf("x = %d y = %d", mx, my);
+	//printf("x = %d y = %d", mx, my);
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		if (now == TITLE)
@@ -1436,11 +1441,6 @@ void iMouse(int button, int state, int mx, int my)
 		// printf("%d %d\n", tap_r, tap_c);
 	}
 }
-
-/*
-	function iKeyboard() is called whenever the user hits a key in keyboard.
-	key- holds the ASCII value of the key pressed.
-	*/
 void iKeyboard(unsigned char key)
 {
 	if ((idx2 == 7 && mode == 1) || (bidx3 == 15 && mode == 1))
@@ -1448,7 +1448,6 @@ void iKeyboard(unsigned char key)
 		if (key == '\r')
 		{
 			strcpy(name2, name1);
-			printf("%s\n", name2);
 			name1[0] = 'E', name1[1] = 'N', name1[2] = 'T', name1[3] = 'E', name1[4] = 'R', name1[5] = 'E', name1[6] = 'D';
 			for (int i = 7; i < len; i++)
 			{
@@ -1477,7 +1476,6 @@ void iKeyboard(unsigned char key)
 		if (key == '\r')
 		{
 			strcpy(name4, name3);
-			printf("%s\n", name4);
 			name3[0] = 'E', name3[1] = 'N', name3[2] = 'T', name3[3] = 'E', name3[4] = 'R', name3[5] = 'E', name3[6] = 'D';
 			for (int i = 7; i < len; i++)
 			{
@@ -1503,16 +1501,6 @@ void iKeyboard(unsigned char key)
 	}
 	// place your codes for other keys here
 }
-
-/*
-	function iSpecialKeyboard() is called whenver user hits special keys like-
-	function keys, home, end, pg up, pg down, arraows etc. you have to use
-	appropriate constants to detect them. A list is:
-	GLUT_KEY_F1, GLUT_KEY_F2, GLUT_KEY_F3, GLUT_KEY_F4, GLUT_KEY_F5, GLUT_KEY_F6,
-	GLUT_KEY_F7, GLUT_KEY_F8, GLUT_KEY_F9, GLUT_KEY_F10, GLUT_KEY_F11, GLUT_KEY_F12,
-	GLUT_KEY_LEFT, GLUT_KEY_UP, GLUT_KEY_RIGHT, GLUT_KEY_DOWN, GLUT_KEY_PAGE UP,
-	GLUT_KEY_PAGE DOWN, GLUT_KEY_HOME, GLUT_KEY_END, GLUT_KEY_INSERT
-	*/
 void iSpecialKeyboard(unsigned char key)
 {
 
@@ -1522,7 +1510,6 @@ void iSpecialKeyboard(unsigned char key)
 	}
 	// place your codes for other keys here
 }
-
 void show_moveable_positions(int tap_r, int tap_c)
 {
 	if (turn == 1)
@@ -2244,8 +2231,6 @@ void reset_timer()
 	minute = 0;
 	sec = 0;
 }
-
-// update the sec += 1, and calculate the hour and min according to that
 void update_timer_red()
 {
 	sec += 1;
@@ -2274,8 +2259,6 @@ void update_timer_black()
 		hour1++;
 	}
 }
-
-// draw the timer in the game screen
 void draw_timer_red()
 {
 	ostringstream oss_h;
@@ -2318,6 +2301,7 @@ void playsound()
 {
 	PlaySound("capture.wav", NULL, SND_FILENAME | SND_ASYNC);
 }
+
 int main()
 {
 	load_anim1();
@@ -2335,7 +2319,6 @@ int main()
 	iSetTimer(25, update_banim1);
 	iSetTimer(25, update_banim2);
 	iSetTimer(25, update_banim3);
-	PlaySound("background.wav", NULL, SND_LOOP | SND_ASYNC);
 	iInitialize(1200, 800, "Checkers");
 	iSetTimer(20, update_anim1);
 	return 0;
